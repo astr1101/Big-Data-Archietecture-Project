@@ -1,6 +1,5 @@
+#All Key Value Pairs for All stations average temperature by year from 1929-1968
 
-
-All Key Value Pairs for All stations average temperature by year from 1929-1968
 val data=sc.textFile("bda_project")
 val pairs=data.map(x=>x.split(",")).map(x=>(x(1)(0).isDigit,x(1), x)).filter{case(x,y,z)=>x==true}.map{case(x,y,z)=>(y,z)}
 val all_temps=pairs.map{case(x,y)=>((x,y(3)),y(6).toDouble)}
@@ -10,7 +9,7 @@ val test_2=test.map{case(((a,b),c,d))=>((a,b),c/d)}.map{case(((a,b),c))=>(c,(a,b
 
 
 
-########All Key Value Pairs for All stations average temperature by year from 1969-2019
+#All Key Value Pairs for All stations average temperature by year from 1969-2019
 
 val data_2=sc.textFile("bda_project_2").map(x=>x.split(",")).filter(x=>x.length>=2).map(x=>(x(0).slice(1,7), x(1).slice(1,5), x(7).replaceAll("\\s", ""))).filter{case(x,y,z)=>x(1).isDigit}.map{case(x,y,z)=>((x,y),z.replace("\"",""))}
 val grouped=data_2.map{case((x,y),z)=>((x,y),z.toFloat)}.groupByKey().coalesce(1).map{case((x,y),z)=>((x,y),z.sum, z.size)}
