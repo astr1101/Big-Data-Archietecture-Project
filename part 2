@@ -1,4 +1,4 @@
-import breeze.linalg.NumericOps._
+import breeze.linalg._
 
 val data_1=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", "")))
 val data_2=sc.textFile("bda_project_3/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", "")))
