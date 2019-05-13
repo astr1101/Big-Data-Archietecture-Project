@@ -1,5 +1,10 @@
 import breeze.linalg.NumericOps._
 
+val data_1=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", "")))
+val data_2=sc.textFile("bda_project_3/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", "")))
+val temps_1=data_1.filter(x=>x.length>2).map(x=>((x(0),x(1).split("-")(0)),x(6))).filter{case((x,y),z)=>z(0).isDigit}.map{case((x,y),z)=>((x,y.toInt),z.toFloat)}.groupByKey().mapValues(x=>x.sum/x.size)
+val temps_2=data_2.filter(x=>x.length>2).map(x=>((x(0),x(1).split("-")(0)),x(6))).filter{case((x,y),z)=>z(0).isDigit}.map{case((x,y),z)=>((x,y.toInt),z.toFloat)}.groupByKey().mapValues(x=>x.sum/x.size)
+val unioned_data=temps_1.union(temps_2)
 
 val grouped=unioned_data.map{case((x,y),z)=>(x,(y,z))}
 val grouped_3=grouped.groupByKey().mapValues(x=>Array(x.unzip))
