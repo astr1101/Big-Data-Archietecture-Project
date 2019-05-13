@@ -11,3 +11,9 @@ val re2=re1.map{case(x,y,z)=>(x,y.size, sum(y), sum(z), sum(y.map(y=>y*y)),y.toA
 val re3=re2.filter{case(a,b,c,d,e,f)=>b>5}.map{case(a,b,c,d,e,f)=>(a, (b*f-c*d)/(b*e-c*c))}
 
 
+val stations_1=sc.textFile("bda_project_3/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).filter(x=>x.length>2).map(x=>(x(0),x(5)))
+val stations_2=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).filter(x=>x.length>2).map(x=>(x(0),x(5)))
+val stations_unioned=stations_1.union(stations_2)
+val distinct_stations=stations_unioned.groupByKey().mapValues(x=>x.head).map{case(x,y)=>(x.replaceAll("\"", ""), y)}
+val stats_joined=re3.join(distinct_stations)
+val stats_joined_2=stats_joined.map{case(x,(y,z))=>(x,z,y)}.sortBy(pairs=>pairs._3, false)
