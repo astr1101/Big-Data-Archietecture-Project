@@ -1,2 +1,0 @@
- val avg_diff=unioned_data.map{case((x,y),z)=>(x,z)}.groupByKey().mapValues(x=>(x.max-x.min,x.size)).sortBy(pairs=>pairs._2._1,false).filter(x=>x._2._2>70)
- 
