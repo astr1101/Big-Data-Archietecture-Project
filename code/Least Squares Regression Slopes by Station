@@ -17,4 +17,4 @@ val stations_unioned=stations_1.union(stations_2)
 val distinct_stations=stations_unioned.groupByKey().mapValues(x=>x.head).map{case(x,y)=>(x.replaceAll("\"", ""), y)}
 val stats_joined=re3.join(distinct_stations)
 val stats_joined_2=stats_joined.map{case(x,(y,z))=>(x,z,y)}.sortBy(pairs=>pairs._3, false)
-stats_joined_2.coalesce(1).saveAsTextFile("regression")
+stats_joined_2.coalesce(1).saveAsTextFile("Least_Squares_Regression_By_Station")
