@@ -1,0 +1,13 @@
+val data_1=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", "")))
+val data_2=sc.textFile("bda_project_3/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", "")))
+val temps_1=data_1.filter(x=>x.length>2).map(x=>((x(0),x(1).split("-")(0)),x(6))).filter{case((x,y),z)=>z(0).isDigit}.map{case((x,y),z)=>((x,y.toDouble),z.toDouble)}.groupByKey().mapValues(x=>x.sum/x.size)
+val temps_2=data_2.filter(x=>x.length>2).map(x=>((x(0),x(1).split("-")(0)),x(6))).filter{case((x,y),z)=>z(0).isDigit}.map{case((x,y),z)=>((x,y.toDouble),z.toDouble)}.groupByKey().mapValues(x=>x.sum/x.size)
+val unioned_data=temps_1.union(temps_2)
+val unioned_data_2=unioned_data.map{case((x,y),z)=>(x,(y,z))}
+val stations_1=sc.textFile("bda_project_3/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).filter(x=>x.length>2).map(x=>(x(0),x(5)))
+val stations_2=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).filter(x=>x.length>2).map(x=>(x(0),x(5)))
+val stations_unioned=stations_1.union(stations_2)
+val distinct_stations=stations_unioned.groupByKey().mapValues(x=>x.head).map{case(x,y)=>(x.replaceAll("\"", ""), y)}
+val temp_joined=distinct_stations.join(unioned_data_2)
+val temp_joined_2=temp_joined.map{case((a,(b,(c,d))))=>(a,b,c,d)}.sortBy(pairs=>pairs._4)
+temp_joined_2.saveAsTextFile("highest_average_station_temp_in_a_year")
