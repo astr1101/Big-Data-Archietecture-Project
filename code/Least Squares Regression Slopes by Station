@@ -8,13 +8,14 @@ val grouped=unioned_data.map{case((x,y),z)=>(x,(y,z))}
 val grouped_3=grouped.filter{case(x,(y,z))=>y!=2019}.groupByKey().mapValues(x=>Array(x.unzip))
 val re1=grouped_3.map{case(x,y)=>(x,DenseVector(y(0)._1.toArray), DenseVector(y(0)._2.toArray))}
 val re2=re1.map{case(x,y,z)=>(x,y.size, sum(y), sum(z), sum(y.map(y=>y*y)),y.toArray.zip(z.toArray).map{case(x,y)=>(x*y)}.sum)}
-val re3=re2.filter{case(a,b,c,d,e,f)=>b>5}.map{case(a,b,c,d,e,f)=>(a, (b*f-c*d)/(b*e-c*c))}
+val re4=re2.filter{case(a,b,c,d,e,f)=>b>5}.map{case(a,b,c,d,e,f)=>(a, ((b*f-c*d)/(b*e-c*c), (d-(b*f-c*d)/(b*e-c*c)*c)/b))}
 
 
 val stations_1=sc.textFile("bda_project_3/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).filter(x=>x.length>2).map(x=>(x(0),x(5)))
 val stations_2=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).filter(x=>x.length>2).map(x=>(x(0),x(5)))
 val stations_unioned=stations_1.union(stations_2)
 val distinct_stations=stations_unioned.groupByKey().mapValues(x=>x.head).map{case(x,y)=>(x.replaceAll("\"", ""), y)}
-val stats_joined=re3.join(distinct_stations)
-val stats_joined_2=stats_joined.map{case(x,(y,z))=>(x,z,y)}.sortBy(pairs=>pairs._3, false)
+val stats_joined=re4.join(distinct_stations)
+val stats_joined_2=stats_joined.map{case(x,((y,z),a))=>(x,y,z,a)}.sortBy(pairs=>pairs._2, false)
+
 stats_joined_2.coalesce(1).saveAsTextFile("Least_Squares_Regression_By_Station")
