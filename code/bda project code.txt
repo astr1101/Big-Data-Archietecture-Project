@@ -1,35 +1,3 @@
-val data_1=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", "")))
-val data_2=sc.textFile("bda_project_3/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", "")))
-val temps_1=data_1.filter(x=>x.length>2).map(x=>((x(0),x(1).split("-")(0)),x(6))).filter{case((x,y),z)=>z(0).isDigit}.map{case((x,y),z)=>((x,y.toInt),z.toFloat)}.groupByKey().mapValues(x=>x.sum/x.size)
-val temps_2=data_2.filter(x=>x.length>2).map(x=>((x(0),x(1).split("-")(0)),x(6))).filter{case((x,y),z)=>z(0).isDigit}.map{case((x,y),z)=>((x,y.toInt),z.toFloat)}.groupByKey().mapValues(x=>x.sum/x.size)
-val unioned_data=temps_1.union(temps_2)
-val unioned_data_2=unioned_data.sortBy(pair => pair._2, false)
-unioned_data_2.take(10)
-
-Top 10 Highest Average Temperatures In a Year
-
-((69188499999,1991),109.8)
-((69237499999,1988),109.7)
-((63125299999,1998),107.6)
-((69237499999,1992),106.85)
-((69188499999,1992),106.7)
-((69246499999,1993),106.0)
-((69116499999,1988),105.53333)
-((69122499999,1993),105.5)
-((41396099999,1995),105.3)
-((69230499999,1992),104.86)
-
-Combine it with station location
-val unioned_data_2=unioned_data.map{case((x,y),z)=>(x,(y,z))}
-
-val stations_1=data_1.filter(x=>x.length>2).map(x=>((x(0),x(5))))
-val stations_2=data_2.filter(x=>x.length>2).map(x=>((x(0),x(5))))
-val stations_3=stations_1.union(stations_2)
-val stations_4=stations_3.distinct
-val combined=unioned_data_2.join(stations_4)
-val combined_2=combined.map{case(w,((x,y),z))=>(w,x,y,z)}.sortBy(pair=>pair._3, false)
-
-combined_2.take(10).foreach(println)
 
 (69188499999,1991,109.8,)
 (69237499999,1988,109.7,AFWAASSIGNED)
