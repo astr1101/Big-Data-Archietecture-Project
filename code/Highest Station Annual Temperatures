@@ -10,4 +10,4 @@ val stations_unioned=stations_1.union(stations_2)
 val distinct_stations=stations_unioned.groupByKey().mapValues(x=>x.head).map{case(x,y)=>(x.replaceAll("\"", ""), y)}
 val temp_joined=distinct_stations.join(unioned_data_2)
 val temp_joined_2=temp_joined.map{case((a,(b,(c,d))))=>(a,b,c,d)}.sortBy(pairs=>pairs._4)
-temp_joined_2.saveAsTextFile("highest_average_station_temp_in_a_year")
+temp_joined_2.coalesce(1).saveAsTextFile("highest_average_station_temp_in_a_year")
