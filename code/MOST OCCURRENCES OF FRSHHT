@@ -21,3 +21,18 @@ val stations_2=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\
 val stations_unioned=stations_1.union(stations_2)
 val distinct_stations=stations_unioned.groupByKey().mapValues(x=>x.head).map{case(x,y)=>(x.replaceAll("\"", ""), y)}
 
+val fog_named=fog.join(distinct_stations)
+val rain_named=rain.join(distinct_stations)
+val snow_named=snow.join(distinct_stations)
+val hail_named=hail.join(distinct_stations)
+val thunder_named=thunder.join(distinct_stations)
+val tornado_named=tornado.join(distinct_stations)
+
+fog_named.map{case(a,(b,c))=>(b,a,c)}.sortBy(pairs=>pairs._1).coalesce(1).saveAsTextFile("fog_occurences")
+rain_named.map{case(a,(b,c))=>(b,a,c)}.sortBy(pairs=>pairs._1).coalesce(1).saveAsTextFile("rain_occurences")
+snow_named.map{case(a,(b,c))=>(b,a,c)}.sortBy(pairs=>pairs._1).coalesce(1).saveAsTextFile("snow_occurences")
+hail_named.map{case(a,(b,c))=>(b,a,c)}.sortBy(pairs=>pairs._1).coalesce(1).saveAsTextFile("hail_occurences")
+thunder_named.map{case(a,(b,c))=>(b,a,c)}.sortBy(pairs=>pairs._1).coalesce(1).saveAsTextFile("thunder_occurences")
+tornado_named.map{case(a,(b,c))=>(b,a,c)}.sortBy(pairs=>pairs._1).coalesce(1).saveAsTextFile("tornado_occurences")
+
+
