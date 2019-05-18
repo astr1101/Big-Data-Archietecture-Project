@@ -1,3 +1,6 @@
+
+val data_1=sc.textFile("bda_project_2/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", ""))).cache()
+val data_2=sc.textFile("bda_project_3/*.csv").map(x=>x.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").map(_.replaceAll("\\s","").replaceAll("\"", ""))).cache()
 val frshht=data_2.filter(x=>x.length>2).map(x=>((x(0),x(27))))
 val sep_frssht=frshht.filter{case(x,y)=>x(0).isDigit & y!="000000"}.map{case(x,y)=>(x,(y(0).asDigit,y(1).asDigit,y(2).asDigit,y(3).asDigit,y(4).asDigit,y(5).asDigit))}
 val frshht_2=data_1.filter(x=>x.length>2).map(x=>((x(0),x(27))))
